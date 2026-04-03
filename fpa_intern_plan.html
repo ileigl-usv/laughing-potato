@@ -131,7 +131,7 @@
 
 <!-- SAVE BAR -->
 <div class="save-bar">
-  <button class="btn-save" id="saveBtn" onclick="savePlan()">💾 Save to SharePoint</button>
+  <button class="btn-save" id="saveBtn" onclick="downloadPlan()">⬇ Download Plan</button>
   <span class="save-status" id="saveStatus"></span>
 </div>
 
@@ -215,8 +215,7 @@
 
 <script>
   // ─── Config ───────────────────────────────────────────────────────────────
-  const FLOW_URL = 'https://d8d84f6dee5aeafa975de6affbed19.1c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c1e03bee776340999838c42487f4b12f/triggers/manual/paths/invoke?api-version=1';
-  const SECRET_KEY = 'fpа-intern-2026-usv';
+
 
   function saveConfig() {
     SITE_URL = document.getElementById('cfgSite').value.trim().replace(/\/$/, '');
@@ -260,30 +259,53 @@
   }
 
   // ─── Save to SharePoint ───────────────────────────────────────────────────
-  async function savePlan() {
-    const btn = document.getElementById('saveBtn');
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Saving…';
-    setStatus('Sending to SharePoint…', 'info');
+  function downloadPlan() {
+    // Snapshot all current input/textarea values into the DOM before cloning
+    document.querySelectorAll('input, textarea').forEach(el => {
+      if (el.type === 'checkbox') el.setAttribute('checked', el.checked);
+      else el.setAttribute('value', el.value);
+      if (el.tagName === 'TEXTAREA') el.textContent = el.value;
+    });
 
-    try {
-      const data = collectAll();
-      const resp = await fetch(FLOW_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Secret-Key': SECRET_KEY
-        },
-        body: JSON.stringify(data)
-      });
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      setStatus('✅ Plan saved to SharePoint successfully!', 'success');
-    } catch (e) {
-      setStatus(`❌ Save failed: ${e.message}`, 'error');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '💾 Save to SharePoint';
-    }
+    // Clone the entire page
+    const clone = document.documentElement.cloneNode(true);
+
+    // Remove the config bar and save bar from the download
+    clone.querySelector('.config-bar')?.remove();
+    clone.querySelector('.save-bar')?.remove();
+
+    // Replace the script block with a minimal one (just addTask)
+    const scripts = clone.querySelectorAll('script');
+    scripts.forEach(s => s.remove());
+    const minScript = clone.ownerDocument.createElement('script');
+    minScript.textContent = `
+      function addTask(containerId) {
+        const body = document.getElementById(containerId);
+        const btn = body.querySelector('.add-task-btn');
+        const item = document.createElement('div');
+        item.className = 'task-item';
+        item.innerHTML = \`
+          <div class="task-title"><input type="text" placeholder="Task / project name…"></div>
+          <div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div>
+        \`;
+        body.insertBefore(item, btn);
+        item.querySelector('input').focus();
+      }
+    `;
+    clone.querySelector('body').appendChild(minScript);
+
+    // Generate filename from intern name
+    const internName = document.getElementById('m_intern').value.trim().replace(/\s+/g, '_') || 'Intern';
+    const filename = `${internName}_InternPlan_2026.html`;
+
+    // Download
+    const blob = new Blob(['<!DOCTYPE html>' + clone.outerHTML], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    setStatus('✅ Downloaded successfully!', 'success');
   }
 
   function setStatus(msg, type) {
