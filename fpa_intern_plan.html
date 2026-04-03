@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FP&A Intern Plan – Summer 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; color: #222; }
+
+  .header {
+    background: #1a1f5e; color: white;
+    padding: 28px 40px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 5px solid #c8102e;
+  }
+  .header-title h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  .header-title h2 { font-size: 14px; font-weight: 400; opacity: 0.85; margin-top: 4px; }
+  .badge { background: #c8102e; color: white; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; }
+
+  .config-bar {
+    background: #fff4ce; border-bottom: 2px solid #f9c116;
+    padding: 10px 40px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12px;
+  }
+  .config-bar strong { color: #7a5f00; }
+  .config-bar input { border: 1px solid #c8c6c4; border-radius: 4px; padding: 4px 8px; font-size: 12px; width: 300px; }
+  .config-bar input.short { width: 160px; }
+  .config-bar button { background: #1a1f5e; color: #fff; border: none; border-radius: 4px; padding: 5px 14px; cursor: pointer; font-size: 12px; }
+
+  .meta-bar {
+    background: white; border-bottom: 1px solid #dde1ea;
+    padding: 14px 40px; display: flex; gap: 32px; flex-wrap: wrap;
+  }
+  .meta-field { display: flex; flex-direction: column; gap: 3px; }
+  .meta-field label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #888; letter-spacing: 0.8px; }
+  .meta-field input {
+    border: none; border-bottom: 1.5px solid #dde1ea;
+    font-size: 13px; color: #222; padding: 2px 0; width: 180px; background: transparent; outline: none;
+  }
+  .meta-field input:focus { border-bottom-color: #1a1f5e; }
+
+  .save-bar {
+    background: #fff; border-bottom: 1px solid #dde1ea;
+    padding: 10px 40px; display: flex; align-items: center; gap: 14px;
+  }
+  .btn-save {
+    background: #c8102e; color: #fff; border: none; border-radius: 6px;
+    padding: 9px 28px; font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 0.3px;
+    display: flex; align-items: center; gap: 8px; transition: background 0.15s;
+  }
+  .btn-save:hover { background: #a50d26; }
+  .btn-save:disabled { background: #e8909a; cursor: not-allowed; }
+  .save-status { font-size: 13px; }
+  .save-status.success { color: #107c10; }
+  .save-status.error   { color: #a4262c; }
+  .save-status.info    { color: #0078d4; }
+  .spinner { display: inline-block; width: 13px; height: 13px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .content { padding: 28px 40px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+  .section-card { background: white; border-radius: 10px; border: 1px solid #dde1ea; overflow: hidden; display: flex; flex-direction: column; }
+  .section-card.full-width { grid-column: 1 / -1; }
+
+  .card-header { padding: 14px 20px; display: flex; align-items: center; gap: 10px; }
+  .card-header .icon { font-size: 18px; }
+  .card-header h3 { font-size: 14px; font-weight: 700; color: white; }
+  .card-header .subtitle { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 1px; }
+
+  .bg-blue  { background: #1a1f5e; }
+  .bg-red   { background: #c8102e; }
+  .bg-slate { background: #1a1f5e; }
+  .bg-dark  { background: #2c2c2c; }
+
+  .card-body { padding: 16px 20px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+  .task-item { border: 1.5px dashed #ccd0db; border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; transition: border-color 0.2s; }
+  .task-item:hover { border-color: #1a1f5e; }
+  .task-item .task-title input { width: 100%; border: none; font-weight: 700; font-size: 13px; color: #1a1f5e; outline: none; background: transparent; }
+  .task-item .task-title input::placeholder { color: #aab; font-weight: 600; }
+  .task-item .task-purpose input { width: 100%; border: none; font-size: 11px; color: #666; font-style: italic; outline: none; background: transparent; }
+  .task-item .task-purpose input::placeholder { color: #bbb; }
+
+  .add-task-btn {
+    border: 1.5px dashed #bcc2d0; border-radius: 8px; padding: 9px;
+    text-align: center; font-size: 12px; color: #888; cursor: pointer;
+    background: #fafbfc; transition: all 0.2s; user-select: none;
+  }
+  .add-task-btn:hover { border-color: #1a1f5e; color: #1a1f5e; background: #f0f2fa; }
+
+  .objectives-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .obj-box { border: 1.5px dashed #ccd0db; border-radius: 8px; padding: 12px; }
+  .obj-box label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #888; letter-spacing: 0.7px; display: block; margin-bottom: 6px; }
+  .obj-box textarea { width: 100%; border: none; font-size: 12px; color: #333; outline: none; resize: none; background: transparent; font-family: inherit; min-height: 60px; }
+  .obj-box textarea::placeholder { color: #bbb; font-style: italic; }
+
+  .notes-area { border: 1.5px dashed #ccd0db; border-radius: 8px; padding: 12px; }
+  .notes-area textarea { width: 100%; border: none; font-size: 12px; color: #333; outline: none; resize: none; background: transparent; font-family: inherit; min-height: 70px; }
+  .notes-area textarea::placeholder { color: #bbb; font-style: italic; }
+
+  .footer { background: #1a1f5e; color: rgba(255,255,255,0.55); font-size: 10px; text-align: center; padding: 12px; letter-spacing: 0.5px; }
+
+  @media print {
+    .config-bar, .save-bar { display: none; }
+    body { background: white; }
+    .add-task-btn { display: none; }
+    .header, .card-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CONFIG BAR -->
+<div class="config-bar">
+  ⚙️ <strong>SharePoint Setup:</strong>
+  Site URL: <input type="text" id="cfgSite" placeholder="https://yourcompany.sharepoint.com/sites/YourSite" />
+  List Name: <input type="text" id="cfgList" class="short" placeholder="e.g. InternPlans" />
+  <button onclick="saveConfig()">Save Config</button>
+  <span id="cfgStatus" style="color:#7a5f00"></span>
+</div>
+
+<div class="header">
+  <div class="header-title">
+    <h1>Corporate FP&A and U.S. Lubricants Finance — Intern Plan</h1>
+    <h2>Workload, Project, & Development Alignment</h2>
+  </div>
+  <div class="badge">SUMMER 2026</div>
+</div>
+
+<!-- META -->
+<div class="meta-bar">
+  <div class="meta-field"><label>Intern Name</label><input type="text" id="m_intern" placeholder="First Last"></div>
+  <div class="meta-field"><label>Manager / Mentor</label><input type="text" id="m_manager" placeholder="First Last"></div>
+  <div class="meta-field"><label>Department</label><input type="text" id="m_dept" placeholder="e.g. FP&A"></div>
+  <div class="meta-field"><label>Start Date</label><input type="text" id="m_start" placeholder="MM/DD/2026"></div>
+  <div class="meta-field"><label>End Date</label><input type="text" id="m_end" placeholder="MM/DD/2026"></div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar">
+  <button class="btn-save" id="saveBtn" onclick="savePlan()">💾 Save to SharePoint</button>
+  <span class="save-status" id="saveStatus"></span>
+</div>
+
+<div class="content">
+
+  <!-- DAILY / WEEKLY / MONTHLY -->
+  <div class="section-card">
+    <div class="card-header bg-blue">
+      <span class="icon">📅</span>
+      <div><h3>Daily / Weekly / Monthly Tasks</h3><div class="subtitle">Recurring responsibilities building routine & real-world exposure</div></div>
+    </div>
+    <div class="card-body" id="daily-body">
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Task name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Task name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Task name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="add-task-btn" onclick="addTask('daily-body')">+ Add Task</div>
+    </div>
+  </div>
+
+  <!-- SMALL PROJECTS -->
+  <div class="section-card">
+    <div class="card-header bg-red">
+      <span class="icon">🔧</span>
+      <div><h3>Small Projects</h3><div class="subtitle">2–3 ad hoc projects to build problem-solving & perspective</div></div>
+    </div>
+    <div class="card-body" id="small-body">
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Project name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Project name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="add-task-btn" onclick="addTask('small-body')">+ Add Project</div>
+    </div>
+  </div>
+
+  <!-- MAIN PROJECT -->
+  <div class="section-card full-width">
+    <div class="card-header bg-slate">
+      <span class="icon">🚀</span>
+      <div><h3>Main Project</h3><div class="subtitle">Primary summer project — research → alignment → development → presentation</div></div>
+    </div>
+    <div class="card-body" id="main-body">
+      <div class="task-item">
+        <div class="task-title"><input type="text" id="mainProjectTitle" placeholder="Project title…"></div>
+        <div class="task-purpose"><input type="text" id="mainProjectOverview" placeholder="Project overview & development goal…"></div>
+      </div>
+      <div class="objectives-grid">
+        <div class="obj-box"><label>Research Phase</label><textarea id="phaseResearch" placeholder="Goals and deliverables for the research phase…"></textarea></div>
+        <div class="obj-box"><label>Development Phase</label><textarea id="phaseDev" placeholder="Goals and deliverables for the build / development phase…"></textarea></div>
+        <div class="obj-box"><label>Presentation / Outcome</label><textarea id="phasePresentation" placeholder="Final deliverable and audience for the presentation…"></textarea></div>
+      </div>
+      <div class="add-task-btn" onclick="addTask('main-body')">+ Add Main Project</div>
+    </div>
+  </div>
+
+  <!-- LEARNING & TOOLS -->
+  <div class="section-card">
+    <div class="card-header" style="background:#8D8B00;">
+      <span class="icon">💡</span>
+      <div><h3>Learning & Tools</h3><div class="subtitle">Courses, certifications, and tool exposure</div></div>
+    </div>
+    <div class="card-body" id="tools-body">
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Course / tool name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="task-item"><div class="task-title"><input type="text" placeholder="Course / tool name…"></div><div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div></div>
+      <div class="add-task-btn" onclick="addTask('tools-body')">+ Add Learning Item</div>
+    </div>
+  </div>
+
+  <!-- MANAGER NOTES -->
+  <div class="section-card">
+    <div class="card-header bg-dark">
+      <span class="icon">📝</span>
+      <div><h3>Manager Notes & Priorities</h3><div class="subtitle">Additional context, expectations, and team-specific priorities</div></div>
+    </div>
+    <div class="card-body">
+      <div class="notes-area"><textarea id="notes1" placeholder="Enter any additional manager notes, team norms, success criteria, or intern-specific priorities here…"></textarea></div>
+      <div class="notes-area"><textarea id="notes2" placeholder="Mid-summer check-in notes or adjustments…"></textarea></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">U.S. AutoForce — U.S. Venture &nbsp;|&nbsp; Financial Planning & Analysis &nbsp;|&nbsp; Summer 2026 Intern Program</div>
+
+<script>
+  // ─── Config ───────────────────────────────────────────────────────────────
+  let SITE_URL = '';
+  let LIST_NAME = '';
+
+  function saveConfig() {
+    SITE_URL = document.getElementById('cfgSite').value.trim().replace(/\/$/, '');
+    LIST_NAME = document.getElementById('cfgList').value.trim();
+    const st = document.getElementById('cfgStatus');
+    if (!SITE_URL || !LIST_NAME) { st.textContent = '⚠ Please fill in both fields.'; return; }
+    st.textContent = '✓ Config saved.';
+    setTimeout(() => st.textContent = '', 3000);
+  }
+
+  // ─── Collect form data ────────────────────────────────────────────────────
+  function collectSection(sectionId) {
+    const body = document.getElementById(sectionId);
+    const items = body.querySelectorAll('.task-item');
+    return Array.from(items).map(item => {
+      const inputs = item.querySelectorAll('input');
+      return { task: inputs[0]?.value.trim() || '', purpose: inputs[1]?.value.trim() || '' };
+    }).filter(i => i.task);
+  }
+
+  function collectAll() {
+    return {
+      // Title field (required by SP) = intern name
+      Title:              document.getElementById('m_intern').value.trim() || '(No Name)',
+      InternName:         document.getElementById('m_intern').value.trim(),
+      Manager:            document.getElementById('m_manager').value.trim(),
+      Department:         document.getElementById('m_dept').value.trim(),
+      StartDate:          document.getElementById('m_start').value.trim(),
+      EndDate:            document.getElementById('m_end').value.trim(),
+      DailyTasks:         JSON.stringify(collectSection('daily-body')),
+      SmallProjects:      JSON.stringify(collectSection('small-body')),
+      MainProjectTitle:   document.getElementById('mainProjectTitle').value.trim(),
+      MainProjectOverview:document.getElementById('mainProjectOverview').value.trim(),
+      PhaseResearch:      document.getElementById('phaseResearch').value.trim(),
+      PhaseDevelopment:   document.getElementById('phaseDev').value.trim(),
+      PhasePresentation:  document.getElementById('phasePresentation').value.trim(),
+      LearningTools:      JSON.stringify(collectSection('tools-body')),
+      ManagerNotes:       document.getElementById('notes1').value.trim(),
+      MidSummerNotes:     document.getElementById('notes2').value.trim(),
+    };
+  }
+
+  // ─── Save to SharePoint ───────────────────────────────────────────────────
+  async function savePlan() {
+    if (!SITE_URL || !LIST_NAME) {
+      setStatus('⚠ Configure your SharePoint site URL and list name first.', 'error'); return;
+    }
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Saving…';
+    setStatus('Connecting to SharePoint…', 'info');
+
+    try {
+      // 1. Get request digest (auth token for write operations)
+      const digestResp = await fetch(`${SITE_URL}/_api/contextinfo`, {
+        method: 'POST',
+        headers: { Accept: 'application/json;odata=verbose' },
+        credentials: 'include'
+      });
+      if (!digestResp.ok) throw new Error(`Auth failed (${digestResp.status}). Are you logged into SharePoint?`);
+      const digestData = await digestResp.json();
+      const digest = digestData.d.GetContextWebInformation.FormDigestValue;
+
+      // 2. Build payload — map keys to your SP list's internal column names
+      // ⚠ Update the keys below to match your list's actual internal column names
+      const data = collectAll();
+      const payload = {
+        __metadata: { type: 'SP.Data.ListItem' },
+        Title:               data.Title,
+        InternName:          data.InternName,        // SP column: InternName
+        Manager:             data.Manager,            // SP column: Manager
+        Department:          data.Department,         // SP column: Department
+        StartDate:           data.StartDate,          // SP column: StartDate
+        EndDate:             data.EndDate,            // SP column: EndDate
+        DailyTasks:          data.DailyTasks,         // SP column: DailyTasks (multi-line text)
+        SmallProjects:       data.SmallProjects,      // SP column: SmallProjects (multi-line text)
+        MainProjectTitle:    data.MainProjectTitle,   // SP column: MainProjectTitle
+        MainProjectOverview: data.MainProjectOverview,// SP column: MainProjectOverview
+        PhaseResearch:       data.PhaseResearch,      // SP column: PhaseResearch (multi-line text)
+        PhaseDevelopment:    data.PhaseDevelopment,   // SP column: PhaseDevelopment (multi-line text)
+        PhasePresentation:   data.PhasePresentation,  // SP column: PhasePresentation (multi-line text)
+        LearningTools:       data.LearningTools,      // SP column: LearningTools (multi-line text)
+        ManagerNotes:        data.ManagerNotes,        // SP column: ManagerNotes (multi-line text)
+        MidSummerNotes:      data.MidSummerNotes,     // SP column: MidSummerNotes (multi-line text)
+      };
+
+      // 3. POST to SharePoint list
+      const saveResp = await fetch(
+        `${SITE_URL}/_api/web/lists/getbytitle('${encodeURIComponent(LIST_NAME)}')/items`,
+        {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json;odata=verbose',
+            'Content-Type': 'application/json;odata=verbose',
+            'X-RequestDigest': digest
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+      if (!saveResp.ok) {
+        const err = await saveResp.json().catch(() => ({}));
+        throw new Error(err?.error?.message?.value || `HTTP ${saveResp.status}`);
+      }
+      setStatus('✅ Plan saved to SharePoint successfully!', 'success');
+    } catch (e) {
+      setStatus(`❌ Save failed: ${e.message}`, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '💾 Save to SharePoint';
+    }
+  }
+
+  function setStatus(msg, type) {
+    const el = document.getElementById('saveStatus');
+    el.textContent = msg;
+    el.className = 'save-status ' + type;
+  }
+
+  // ─── Add task rows ────────────────────────────────────────────────────────
+  function addTask(containerId) {
+    const body = document.getElementById(containerId);
+    const btn = body.querySelector('.add-task-btn');
+    const item = document.createElement('div');
+    item.className = 'task-item';
+    item.innerHTML = `
+      <div class="task-title"><input type="text" placeholder="Task / project name…"></div>
+      <div class="task-purpose"><input type="text" placeholder="Purpose / development goal…"></div>
+    `;
+    body.insertBefore(item, btn);
+    item.querySelector('input').focus();
+  }
+</script>
+</body>
+</html>
