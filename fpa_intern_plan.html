@@ -215,8 +215,8 @@
 
 <script>
   // ─── Config ───────────────────────────────────────────────────────────────
-  let SITE_URL = 'https://usventure.sharepoint.com/sites/CorporateFPA';
-  let LIST_NAME = 'InternPlans';
+  const FLOW_URL = 'https://d8d84f6dee5aeafa975de6affbed19.1c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c1e03bee776340999838c42487f4b12f/triggers/manual/paths/invoke?api-version=1';
+  const SECRET_KEY = 'fpа-intern-2026-usv';
 
   function saveConfig() {
     SITE_URL = document.getElementById('cfgSite').value.trim().replace(/\/$/, '');
@@ -261,66 +261,22 @@
 
   // ─── Save to SharePoint ───────────────────────────────────────────────────
   async function savePlan() {
-    if (!SITE_URL || !LIST_NAME) {
-      setStatus('⚠ Configure your SharePoint site URL and list name first.', 'error'); return;
-    }
     const btn = document.getElementById('saveBtn');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Saving…';
-    setStatus('Connecting to SharePoint…', 'info');
+    setStatus('Sending to SharePoint…', 'info');
 
     try {
-      // 1. Get request digest (auth token for write operations)
-      const digestResp = await fetch(`${SITE_URL}/_api/contextinfo`, {
-        method: 'POST',
-        headers: { Accept: 'application/json;odata=verbose' },
-        credentials: 'include'
-      });
-      if (!digestResp.ok) throw new Error(`Auth failed (${digestResp.status}). Are you logged into SharePoint?`);
-      const digestData = await digestResp.json();
-      const digest = digestData.d.GetContextWebInformation.FormDigestValue;
-
-      // 2. Build payload — map keys to your SP list's internal column names
-      // ⚠ Update the keys below to match your list's actual internal column names
       const data = collectAll();
-      const payload = {
-        __metadata: { type: 'SP.Data.ListItem' },
-        Title:               data.Title,
-        InternName:          data.InternName,        // SP column: InternName
-        Manager:             data.Manager,            // SP column: Manager
-        Department:          data.Department,         // SP column: Department
-        StartDate:           data.StartDate,          // SP column: StartDate
-        EndDate:             data.EndDate,            // SP column: EndDate
-        DailyTasks:          data.DailyTasks,         // SP column: DailyTasks (multi-line text)
-        SmallProjects:       data.SmallProjects,      // SP column: SmallProjects (multi-line text)
-        MainProjectTitle:    data.MainProjectTitle,   // SP column: MainProjectTitle
-        MainProjectOverview: data.MainProjectOverview,// SP column: MainProjectOverview
-        PhaseResearch:       data.PhaseResearch,      // SP column: PhaseResearch (multi-line text)
-        PhaseDevelopment:    data.PhaseDevelopment,   // SP column: PhaseDevelopment (multi-line text)
-        PhasePresentation:   data.PhasePresentation,  // SP column: PhasePresentation (multi-line text)
-        LearningTools:       data.LearningTools,      // SP column: LearningTools (multi-line text)
-        ManagerNotes:        data.ManagerNotes,        // SP column: ManagerNotes (multi-line text)
-        MidSummerNotes:      data.MidSummerNotes,     // SP column: MidSummerNotes (multi-line text)
-      };
-
-      // 3. POST to SharePoint list
-      const saveResp = await fetch(
-        `${SITE_URL}/_api/web/lists/getbytitle('${encodeURIComponent(LIST_NAME)}')/items`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Accept': 'application/json;odata=verbose',
-            'Content-Type': 'application/json;odata=verbose',
-            'X-RequestDigest': digest
-          },
-          body: JSON.stringify(payload)
-        }
-      );
-      if (!saveResp.ok) {
-        const err = await saveResp.json().catch(() => ({}));
-        throw new Error(err?.error?.message?.value || `HTTP ${saveResp.status}`);
-      }
+      const resp = await fetch(FLOW_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Secret-Key': SECRET_KEY
+        },
+        body: JSON.stringify(data)
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       setStatus('✅ Plan saved to SharePoint successfully!', 'success');
     } catch (e) {
       setStatus(`❌ Save failed: ${e.message}`, 'error');
