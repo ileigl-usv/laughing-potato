@@ -18,14 +18,7 @@
   .header-title h2 { font-size: 14px; font-weight: 400; opacity: 0.85; margin-top: 4px; }
   .badge { background: #c8102e; color: white; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; letter-spacing: 0.5px; }
 
-  .config-bar {
-    background: #fff4ce; border-bottom: 2px solid #f9c116;
-    padding: 10px 40px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12px;
-  }
-  .config-bar strong { color: #7a5f00; }
-  .config-bar input { border: 1px solid #c8c6c4; border-radius: 4px; padding: 4px 8px; font-size: 12px; width: 300px; }
-  .config-bar input.short { width: 160px; }
-  .config-bar button { background: #1a1f5e; color: #fff; border: none; border-radius: 4px; padding: 5px 14px; cursor: pointer; font-size: 12px; }
+  .config-bar { display: none; }
 
   .meta-bar {
     background: white; border-bottom: 1px solid #dde1ea;
@@ -222,8 +215,8 @@
 
 <script>
   // ─── Config ───────────────────────────────────────────────────────────────
-  let SITE_URL = '';
-  let LIST_NAME = '';
+  let SITE_URL = 'https://usventure.sharepoint.com/sites/CorporateFPA';
+  let LIST_NAME = 'InternPlans';
 
   function saveConfig() {
     SITE_URL = document.getElementById('cfgSite').value.trim().replace(/\/$/, '');
