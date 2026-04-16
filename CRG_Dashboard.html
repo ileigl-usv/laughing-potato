@@ -5,242 +5,275 @@
 <meta name="viewport" content="width=1280">
 <title>Page 4 — CRG P&L</title>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 1280px; height: 720px; overflow: hidden; background: #E8EBF0; font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #252423; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html,body{width:1280px;height:720px;overflow:hidden;background:#D9DCE3;font-family:'Segoe UI',Arial,sans-serif;color:#252423;}
 
-  .canvas { width: 1280px; height: 720px; display: grid; grid-template-rows: 36px 44px 1fr; padding: 5px; gap: 4px; }
+  .canvas{width:1280px;height:720px;display:grid;grid-template-rows:34px 38px 310px 1fr;padding:4px;gap:3px;}
 
-  .topbar { background: #1F3864; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; border-radius: 2px; }
-  .topbar-title { color: #fff; font-size: 13px; font-weight: 700; letter-spacing: 0.01em; }
-  .topbar-meta { color: #B5C4E0; font-size: 9.5px; display: flex; gap: 14px; align-items: center; }
-  .topbar-badge { background: #2E5FA3; color: #C5D7F4; padding: 2px 7px; border-radius: 2px; font-size: 9px; }
+  /* Header */
+  .topbar{background:#1F3864;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-radius:2px;}
+  .topbar-title{color:#fff;font-size:13px;font-weight:700;}
+  .topbar-meta{color:#B5C4E0;font-size:9px;display:flex;gap:12px;align-items:center;}
+  .badge{background:#2E5FA3;color:#C5D7F4;padding:1px 7px;border-radius:2px;font-size:9px;}
 
-  .slicer-row { background: #fff; border: 1px solid #D0D5DF; border-radius: 2px; display: flex; align-items: center; overflow: hidden; }
-  .slicer-block { display: flex; align-items: center; gap: 7px; padding: 0 14px; height: 100%; border-right: 1px solid #E4E7EF; }
-  .slicer-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: #888; font-weight: 700; white-space: nowrap; }
-  .pill-row { display: flex; gap: 2px; }
-  .pill { font-size: 10px; padding: 2px 9px; border-radius: 2px; border: 1px solid #CDD2DF; background: #F4F6FA; color: #555; cursor: pointer; transition: all 0.1s; white-space: nowrap; }
-  .pill.on { background: #1F3864; color: #fff; border-color: #1F3864; }
-  .pill:hover:not(.on) { background: #E2E8F5; }
-  .slicer-spacer { flex: 1; }
-  .refresh-note { font-size: 9px; color: #AAA; padding-right: 12px; }
+  /* Slicers */
+  .slicer-row{background:#fff;border:1px solid #CDD2DF;border-radius:2px;display:flex;align-items:center;overflow:hidden;}
+  .sb{display:flex;align-items:center;gap:6px;padding:0 12px;height:100%;border-right:1px solid #E4E7EF;}
+  .sl{font-size:8.5px;text-transform:uppercase;letter-spacing:.05em;color:#999;font-weight:700;white-space:nowrap;}
+  .pills{display:flex;gap:2px;}
+  .pill{font-size:9.5px;padding:1px 8px;border-radius:2px;border:1px solid #CDD2DF;background:#F4F6FA;color:#555;cursor:pointer;white-space:nowrap;}
+  .pill.on{background:#1F3864;color:#fff;border-color:#1F3864;}
+  .pill:hover:not(.on){background:#E2E8F5;}
+  .spacer{flex:1;}
+  .rn{font-size:8.5px;color:#BBB;padding-right:10px;}
 
-  .main { display: grid; grid-template-columns: 1fr 1fr 284px; gap: 4px; min-height: 0; }
+  /* Top row: left ~38% | right ~62% */
+  .top-row{display:grid;grid-template-columns:38% 1fr;gap:3px;min-height:0;}
 
-  .panel { background: #fff; border: 1px solid #D0D5DF; border-radius: 2px; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
-  .panel-hdr { background: #EDF0F7; border-bottom: 1px solid #D4DAE8; padding: 4px 9px; display: flex; align-items: baseline; gap: 7px; flex-shrink: 0; }
-  .panel-title { font-size: 10.5px; font-weight: 700; color: #1F3864; }
-  .panel-sub { font-size: 8.5px; color: #999; }
-  .panel-body { flex: 1; overflow: hidden; padding: 5px 7px; display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+  /* Left col: KPIs + donut panel */
+  .left-col{display:flex;flex-direction:column;gap:3px;min-height:0;}
 
-  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; flex-shrink: 0; }
-  .kpi { background: #F3F6FC; border: 1px solid #D8E0F0; border-radius: 2px; padding: 4px 7px; }
-  .kpi-lbl { font-size: 8.5px; color: #777; margin-bottom: 1px; }
-  .kpi-val { font-size: 15px; font-weight: 700; color: #1F3864; line-height: 1.1; }
-  .kpi-delta { font-size: 8.5px; margin-top: 1px; }
-  .pos { color: #217346; } .neg { color: #C00000; }
+  /* Right col: two trend charts stacked */
+  .right-col{display:flex;flex-direction:column;gap:3px;min-height:0;}
 
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  thead th { font-size: 8.5px; font-weight: 700; color: #555; padding: 2px 4px; border-bottom: 1.5px solid #C5CEDF; text-align: right; background: #F5F7FC; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  thead th:first-child { text-align: left; }
-  tbody tr { border-bottom: 0.5px solid #EBEBEB; }
-  tbody tr:hover { background: #F0F4FF; }
-  tbody td { font-size: 10px; padding: 2.5px 4px; text-align: right; color: #252423; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  tbody td:first-child { text-align: left; }
-  .sub td:first-child { padding-left: 13px; color: #555; }
-  .sep td { border-top: 1px solid #B8C4DA; font-weight: 700; color: #1F3864; background: #EEF2FA; font-size: 10px; }
-  .grand td { border-top: 2px solid #1F3864; font-weight: 700; color: #1F3864; background: #E5EBF7; font-size: 10px; }
+  /* Generic panel */
+  .panel{background:#fff;border:1px solid #CDD2DF;border-radius:2px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+  .ph{background:#EDF0F7;border-bottom:1px solid #D4DAE8;padding:3px 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .pt{font-size:10px;font-weight:700;color:#1F3864;}
+  .ps{font-size:8px;color:#AAA;}
+  .pb{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 
-  .chart-wrap { position: relative; flex: 1; min-height: 0; }
-  .chart-wrap canvas { position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; }
+  /* KPI strip */
+  .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;padding:5px 5px 4px;flex-shrink:0;}
+  .kpi{background:#F3F6FC;border:1px solid #D8E0F0;border-radius:2px;padding:5px 7px;}
+  .kl{font-size:8px;color:#777;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .kv{font-size:15px;font-weight:700;color:#1F3864;line-height:1.15;}
+  .kd{font-size:8px;margin-top:1px;}
+  .pos{color:#217346;} .neg{color:#C00000;}
 
-  .right-col { display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+  /* Donut + efficiency */
+  .donut-row{display:flex;flex-direction:row;align-items:center;gap:8px;padding:6px 8px;flex:1;min-height:0;}
+  .ld{width:8px;height:8px;border-radius:1px;display:inline-block;margin-right:3px;vertical-align:middle;flex-shrink:0;}
 
-  .legend { display: flex; gap: 10px; font-size: 8.5px; color: #555; flex-shrink: 0; }
-  .leg-dot { width: 8px; height: 8px; border-radius: 1px; display: inline-block; margin-right: 3px; vertical-align: middle; }
+  /* Efficiency table */
+  table{width:100%;border-collapse:collapse;table-layout:fixed;}
+  thead th{font-size:8.5px;font-weight:700;color:#444;padding:2px 4px;border-bottom:2px solid #1F3864;text-align:right;background:#EDF0F7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  thead th:first-child{text-align:left;}
+  tbody tr{border-bottom:.5px solid #EAEAEA;}
+  tbody tr:hover{background:#F0F4FF;}
+  tbody td{font-size:9.5px;padding:2.5px 4px;text-align:right;color:#252423;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  tbody td:first-child{text-align:left;}
+  .ind td:first-child{padding-left:13px;color:#666;font-size:9px;}
+  .sep td{border-top:1px solid #B8C4DA;font-weight:700;color:#1F3864;background:#EEF2FA;font-size:9.5px;}
+  .tot td{font-weight:700;color:#fff;background:#1F3864;font-size:10px;}
 
-  .notes { font-size: 9px; color: #444; line-height: 1.8; }
-  .notes strong { color: #1F3864; }
-  .notes .divider { margin-top: 5px; padding-top: 5px; border-top: 1px solid #E4E7EF; color: #AAA; font-size: 8.5px; }
+  /* Chart wrappers */
+  .cw{position:relative;flex:1;min-height:0;}
+  .cw canvas{position:absolute;top:0;left:0;width:100%!important;height:100%!important;}
+
+  /* Legend */
+  .leg{display:flex;gap:10px;font-size:8px;color:#555;flex-shrink:0;padding:2px 8px 0;}
+
+  /* Bottom table panel */
+  .bottom{background:#fff;border:1px solid #CDD2DF;border-radius:2px;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+  .btable-wrap{flex:1;overflow:auto;padding:3px 5px 3px;}
 </style>
 </head>
 <body>
 <div class="canvas">
 
+  <!-- Header -->
   <div class="topbar">
     <span class="topbar-title">CRG P&amp;L</span>
     <div class="topbar-meta">
       <span>Page 4 of 8</span>
       <span>Source: Anaplan / ERP / GL</span>
       <span>Audience: CFO · CRG leaders · Finance BPs</span>
-      <span class="topbar-badge">Sample</span>
+      <span class="badge">Sample</span>
     </div>
   </div>
 
+  <!-- Slicers -->
   <div class="slicer-row">
-    <div class="slicer-block">
-      <span class="slicer-lbl">Version</span>
-      <div class="pill-row" id="v">
-        <span class="pill on" onclick="sel(this,'v')">Actuals</span>
-        <span class="pill" onclick="sel(this,'v')">Forecast</span>
-        <span class="pill" onclick="sel(this,'v')">Budget</span>
-      </div>
-    </div>
-    <div class="slicer-block">
-      <span class="slicer-lbl">Period</span>
-      <div class="pill-row" id="p">
-        <span class="pill on" onclick="sel(this,'p')">YTD</span>
-        <span class="pill" onclick="sel(this,'p')">MTD</span>
-        <span class="pill" onclick="sel(this,'p')">Full Year</span>
-      </div>
-    </div>
-    <div class="slicer-block">
-      <span class="slicer-lbl">CRG</span>
-      <div class="pill-row" id="c">
-        <span class="pill on" onclick="sel(this,'c')">All</span>
-        <span class="pill" onclick="sel(this,'c')">CRG A</span>
-        <span class="pill" onclick="sel(this,'c')">CRG B</span>
-        <span class="pill" onclick="sel(this,'c')">CRG C</span>
-      </div>
-    </div>
-    <div class="slicer-spacer"></div>
-    <span class="refresh-note">Last refresh: today, 06:00 AM</span>
+    <div class="sb"><span class="sl">Version</span><div class="pills" id="v"><span class="pill on" onclick="sel(this,'v')">Actuals</span><span class="pill" onclick="sel(this,'v')">Forecast</span><span class="pill" onclick="sel(this,'v')">Budget</span></div></div>
+    <div class="sb"><span class="sl">Period</span><div class="pills" id="p"><span class="pill on" onclick="sel(this,'p')">YTD</span><span class="pill" onclick="sel(this,'p')">MTD</span><span class="pill" onclick="sel(this,'p')">Full Year</span></div></div>
+    <div class="sb"><span class="sl">CRG</span><div class="pills" id="c"><span class="pill on" onclick="sel(this,'c')">All</span><span class="pill" onclick="sel(this,'c')">CRG A</span><span class="pill" onclick="sel(this,'c')">CRG B</span><span class="pill" onclick="sel(this,'c')">CRG C</span></div></div>
+    <div class="spacer"></div>
+    <span class="rn">Last refresh: today, 06:00 AM</span>
   </div>
 
-  <div class="main">
+  <!-- Top row -->
+  <div class="top-row">
 
-    <!-- Item 24: IS each CRG — OpEx only -->
-    <div class="panel">
-      <div class="panel-hdr">
-        <span class="panel-title">Consolidated IS — each CRG</span>
-        <span class="panel-sub">Item 24 · Matrix / table · OpEx view</span>
-      </div>
-      <div class="panel-body">
+    <!-- Left col -->
+    <div class="left-col">
+
+      <!-- KPI header bar -->
+      <div class="panel" style="flex-shrink:0;">
         <div class="kpi-strip">
-          <div class="kpi"><div class="kpi-lbl">Total OpEx (all CRGs)</div><div class="kpi-val">$158M</div><div class="kpi-delta neg">▼ $11M vs Bud</div></div>
-          <div class="kpi"><div class="kpi-lbl">GP allocation (total)</div><div class="kpi-val">$311M</div><div class="kpi-delta pos">▲ $8M vs Bud</div></div>
-          <div class="kpi"><div class="kpi-lbl">EBITDA (all CRGs)</div><div class="kpi-val">$113M</div><div class="kpi-delta neg">▼ $1M vs Bud</div></div>
-          <div class="kpi"><div class="kpi-lbl">EBIT (all CRGs)</div><div class="kpi-val">$81M</div><div class="kpi-delta pos">▲ 1.3% vs PY</div></div>
-        </div>
-        <div style="flex:1; overflow:auto;">
-          <table>
-            <colgroup><col style="width:32%"><col style="width:16%"><col style="width:16%"><col style="width:16%"><col style="width:20%"></colgroup>
-            <thead>
-              <tr><th>Line item</th><th>CRG A</th><th>CRG B</th><th>CRG C</th><th>Var vs Bud</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>GP allocation</td><td>$114M</td><td>$113M</td><td>$84M</td><td class="pos">+$8M</td></tr>
-              <tr class="sub"><td>Selling &amp; dist.</td><td>($28M)</td><td>($24M)</td><td>($21M)</td><td class="neg">($4M)</td></tr>
-              <tr class="sub"><td>Admin &amp; corporate</td><td>($19M)</td><td>($18M)</td><td>($16M)</td><td class="neg">($3M)</td></tr>
-              <tr class="sub"><td>Other OpEx</td><td>($12M)</td><td>($11M)</td><td>($9M)</td><td class="neg">($2M)</td></tr>
-              <tr class="sep"><td>Total OpEx</td><td>($59M)</td><td>($53M)</td><td>($46M)</td><td class="neg">($9M)</td></tr>
-              <tr class="sep"><td>EBITDA</td><td>$55M</td><td>$60M</td><td>$38M</td><td class="neg">($1M)</td></tr>
-              <tr class="sub"><td>D&amp;A</td><td>($12M)</td><td>($11M)</td><td>($9M)</td><td>—</td></tr>
-              <tr class="grand"><td>EBIT</td><td>$43M</td><td>$49M</td><td>$29M</td><td class="neg">($8M)</td></tr>
-            </tbody>
-          </table>
+          <div class="kpi"><div class="kl">Total OpEx vs Budget</div><div class="kv">($11M)</div><div class="kd neg">▼ 7.5% unfavourable</div></div>
+          <div class="kpi"><div class="kl">Largest overspend</div><div class="kv">CRG A</div><div class="kd neg">▼ ($9M) vs Bud</div></div>
+          <div class="kpi"><div class="kl">Headcount % of OpEx</div><div class="kv">61%</div><div class="kd pos">▼ -1pp vs Bud</div></div>
+          <div class="kpi"><div class="kl">OpEx per head</div><div class="kv">$137K</div><div class="kd neg">▲ +$4K vs PY</div></div>
         </div>
       </div>
+
+      <!-- Donut + efficiency table -->
+      <div class="panel" style="flex:1;">
+        <div class="ph"><span class="pt">OpEx split by CRG &amp; efficiency</span><span class="ps">% of total · per head · vs budget</span></div>
+        <div class="donut-row">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;">
+            <canvas id="donut" width="110" height="110" role="img" aria-label="Donut chart showing OpEx split: CRG A 37%, CRG B 34%, CRG C 29%">CRG A 37%, CRG B 34%, CRG C 29%.</canvas>
+            <div style="font-size:8px;color:#555;display:flex;flex-direction:column;gap:2px;align-self:flex-start;">
+              <span><span class="ld" style="background:#1F3864;"></span>CRG A — 37%</span>
+              <span><span class="ld" style="background:#378ADD;"></span>CRG B — 34%</span>
+              <span><span class="ld" style="background:#85B7EB;"></span>CRG C — 29%</span>
+            </div>
+          </div>
+          <div style="flex:1;min-width:0;overflow:auto;">
+            <table style="table-layout:fixed;">
+              <colgroup><col style="width:44%"><col style="width:19%"><col style="width:19%"><col style="width:18%"></colgroup>
+              <thead><tr><th>Metric</th><th>CRG A</th><th>CRG B</th><th>CRG C</th></tr></thead>
+              <tbody>
+                <tr><td>Total OpEx</td><td>($59M)</td><td>($53M)</td><td>($46M)</td></tr>
+                <tr><td>vs Budget</td><td class="neg">($9M)</td><td class="neg">($1M)</td><td class="neg">($1M)</td></tr>
+                <tr><td>vs Budget %</td><td class="neg">-18.0%</td><td class="neg">-1.9%</td><td class="neg">-2.2%</td></tr>
+                <tr><td>HC / OpEx</td><td>61%</td><td>60%</td><td>61%</td></tr>
+                <tr><td>OpEx per head</td><td>$142K</td><td>$138K</td><td>$131K</td></tr>
+                <tr><td>vs PY per head</td><td class="neg">+$8K</td><td class="neg">+$6K</td><td class="pos">-$2K</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <!-- Item 25: IS all CRGs total -->
-    <div class="panel">
-      <div class="panel-hdr">
-        <span class="panel-title">Consolidated IS — all CRGs total</span>
-        <span class="panel-sub">Item 25 · Summary table</span>
-      </div>
-      <div class="panel-body">
-        <div style="flex:1; overflow:auto;">
-          <table>
-            <colgroup><col style="width:28%"><col style="width:13%"><col style="width:13%"><col style="width:10%"><col style="width:10%"><col style="width:13%"><col style="width:13%"></colgroup>
-            <thead>
-              <tr><th>Line item</th><th>Actuals YTD</th><th>Budget YTD</th><th>Var $</th><th>Var %</th><th>PY YTD</th><th>PY Var %</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>GP allocation</td><td>$311M</td><td>$303M</td><td class="pos">+$8M</td><td class="pos">+2.6%</td><td>$296M</td><td class="pos">+5.1%</td></tr>
-              <tr class="sub"><td>Selling &amp; dist.</td><td>($73M)</td><td>($69M)</td><td class="neg">($4M)</td><td class="neg">-5.8%</td><td>($68M)</td><td class="neg">-7.4%</td></tr>
-              <tr class="sub"><td>Admin &amp; corporate</td><td>($53M)</td><td>($52M)</td><td class="neg">($1M)</td><td class="neg">-1.9%</td><td>($49M)</td><td class="neg">-8.2%</td></tr>
-              <tr class="sub"><td>Other OpEx</td><td>($72M)</td><td>($70M)</td><td class="neg">($2M)</td><td class="neg">-2.9%</td><td>($69M)</td><td class="neg">-4.3%</td></tr>
-              <tr class="sep"><td>Total OpEx</td><td>($198M)</td><td>($191M)</td><td class="neg">($7M)</td><td class="neg">-3.7%</td><td>($186M)</td><td class="neg">-6.5%</td></tr>
-              <tr class="sep"><td>EBITDA</td><td>$113M</td><td>$112M</td><td class="neg">($1M)</td><td class="neg">-0.7%</td><td>$110M</td><td class="pos">+2.7%</td></tr>
-              <tr class="sub"><td>D&amp;A</td><td>($32M)</td><td>($31M)</td><td class="neg">($1M)</td><td>—</td><td>($30M)</td><td>—</td></tr>
-              <tr class="grand"><td>EBIT</td><td>$81M</td><td>$81M</td><td>—</td><td>—</td><td>$80M</td><td class="pos">+1.3%</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right col -->
+    <!-- Right col: two trend charts -->
     <div class="right-col">
 
-      <!-- Item 26: OpEx chart -->
-      <div class="panel" style="flex:2;">
-        <div class="panel-hdr">
-          <span class="panel-title">Total OpEx incl. Admin</span>
-          <span class="panel-sub">Item 26 · Bar + table · excl. LTIP/STIP</span>
+      <!-- Chart 1: Monthly OpEx by CRG — grouped bars + budget line -->
+      <div class="panel" style="flex:1;">
+        <div class="ph">
+          <span class="pt">Monthly OpEx by CRG — Actual vs Budget ($M)</span>
+          <span class="ps">Jan – Jun</span>
+          <div class="leg" style="padding:0;margin-left:10px;">
+            <span><span class="ld" style="background:#1F3864;"></span>CRG A</span>
+            <span><span class="ld" style="background:#378ADD;"></span>CRG B</span>
+            <span><span class="ld" style="background:#85B7EB;"></span>CRG C</span>
+            <span><span class="ld" style="border:1.5px dashed #C00000;background:transparent;"></span>Budget</span>
+          </div>
         </div>
-        <div class="panel-body">
-          <div class="legend">
-            <span><span class="leg-dot" style="background:#1F3864;"></span>Actual</span>
-            <span><span class="leg-dot" style="background:#85B7EB;"></span>Budget</span>
-          </div>
-          <div class="chart-wrap">
-            <canvas id="opexChart" role="img" aria-label="Grouped bar chart of OpEx actual vs budget per CRG. CRG A $59M vs $50M, CRG B $53M vs $52M, CRG C $46M vs $45M.">CRG A: $59M vs $50M. CRG B: $53M vs $52M. CRG C: $46M vs $45M.</canvas>
-          </div>
-          <table style="flex-shrink:0;">
-            <colgroup><col style="width:30%"><col><col><col></colgroup>
-            <thead><tr><th>CRG</th><th>Actual</th><th>Budget</th><th>Var</th></tr></thead>
-            <tbody>
-              <tr><td>CRG A</td><td>$59M</td><td>$50M</td><td class="neg">($9M)</td></tr>
-              <tr><td>CRG B</td><td>$53M</td><td>$52M</td><td class="neg">($1M)</td></tr>
-              <tr><td>CRG C</td><td>$46M</td><td>$45M</td><td class="neg">($1M)</td></tr>
-              <tr class="grand"><td>Total</td><td>$158M</td><td>$147M</td><td class="neg">($11M)</td></tr>
-            </tbody>
-          </table>
+        <div class="cw" style="padding:3px 8px 5px;">
+          <canvas id="trendCRG" role="img" aria-label="Grouped monthly OpEx bars for CRG A, B, C with budget line Jan to Jun">Monthly CRG OpEx trending above budget from April.</canvas>
         </div>
       </div>
 
-      <!-- Notes -->
+      <!-- Chart 2: OpEx by category stacked — monthly -->
       <div class="panel" style="flex:1;">
-        <div class="panel-hdr"><span class="panel-title">Notes</span></div>
-        <div class="panel-body" style="justify-content:center;">
-          <div class="notes">
-            <div><strong>Source:</strong> Anaplan / ERP / GL</div>
-            <div><strong>Refresh:</strong> Daily at 06:00 AM</div>
-            <div><strong>OpEx:</strong> Excludes LTIP &amp; STIP</div>
-            <div><strong>Structure:</strong> CRGs report OpEx only; GP allocated from consolidated P&amp;L</div>
-            <div class="divider">Items 24–27 · Page 4 of 8</div>
+        <div class="ph">
+          <span class="pt">OpEx by category — monthly stacked ($M)</span>
+          <span class="ps">Jan – Jun · excl. LTIP/STIP</span>
+          <div class="leg" style="padding:0;margin-left:10px;">
+            <span><span class="ld" style="background:#1F3864;"></span>Headcount</span>
+            <span><span class="ld" style="background:#378ADD;"></span>Selling &amp; dist.</span>
+            <span><span class="ld" style="background:#85B7EB;"></span>Admin</span>
+            <span><span class="ld" style="background:#B5D4F4;"></span>Other</span>
           </div>
+        </div>
+        <div class="cw" style="padding:3px 8px 5px;">
+          <canvas id="trendCat" role="img" aria-label="Stacked monthly OpEx by category Jan to Jun. Headcount consistently largest driver.">Headcount largest driver; Other OpEx spiking in June.</canvas>
         </div>
       </div>
 
     </div>
   </div>
+
+  <!-- Bottom: detailed OpEx table -->
+  <div class="bottom">
+    <div class="ph"><span class="pt">CRG OpEx — consolidated detail</span><span class="ps">Items 24/25 · excl. LTIP/STIP · Anaplan / ERP / GL</span></div>
+    <div class="btable-wrap">
+      <table>
+        <colgroup><col style="width:22%"><col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:10%"><col style="width:8%"><col style="width:7%"><col style="width:7%"><col style="width:8%"><col style="width:8%"><col style="width:3%"></colgroup>
+        <thead>
+          <tr>
+            <th>Line item</th>
+            <th>CRG A</th><th>CRG B</th><th>CRG C</th>
+            <th>Total actual</th><th>Budget</th><th>Var $</th><th>Var %</th>
+            <th>PY actual</th><th>PY var %</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sep"><td>Headcount &amp; benefits</td><td>($36M)</td><td>($32M)</td><td>($28M)</td><td>($96M)</td><td>($90M)</td><td class="neg">($6M)</td><td class="neg">-6.7%</td><td>($88M)</td><td class="neg">-9.1%</td><td></td></tr>
+          <tr class="ind"><td>Salaries</td><td>($28M)</td><td>($25M)</td><td>($22M)</td><td>($75M)</td><td>($71M)</td><td class="neg">($4M)</td><td class="neg">-5.6%</td><td>($69M)</td><td class="neg">-8.7%</td><td></td></tr>
+          <tr class="ind"><td>Bonuses &amp; incentives</td><td>($5M)</td><td>($4M)</td><td>($4M)</td><td>($13M)</td><td>($12M)</td><td class="neg">($1M)</td><td class="neg">-8.3%</td><td>($12M)</td><td class="neg">-8.3%</td><td></td></tr>
+          <tr class="ind"><td>Benefits &amp; other</td><td>($3M)</td><td>($3M)</td><td>($2M)</td><td>($8M)</td><td>($7M)</td><td class="neg">($1M)</td><td class="neg">-14.3%</td><td>($7M)</td><td class="neg">-14.3%</td><td></td></tr>
+          <tr class="sep"><td>Selling &amp; distribution</td><td>($10M)</td><td>($9M)</td><td>($8M)</td><td>($27M)</td><td>($26M)</td><td class="neg">($1M)</td><td class="neg">-3.8%</td><td>($25M)</td><td class="neg">-8.0%</td><td></td></tr>
+          <tr class="ind"><td>Marketing</td><td>($4M)</td><td>($4M)</td><td>($3M)</td><td>($11M)</td><td>($10M)</td><td class="neg">($1M)</td><td class="neg">-10.0%</td><td>($10M)</td><td class="neg">-10.0%</td><td></td></tr>
+          <tr class="ind"><td>Distribution &amp; freight</td><td>($6M)</td><td>($5M)</td><td>($5M)</td><td>($16M)</td><td>($16M)</td><td>—</td><td>—</td><td>($15M)</td><td class="neg">-6.7%</td><td></td></tr>
+          <tr class="sep"><td>Admin &amp; corporate</td><td>($8M)</td><td>($7M)</td><td>($5M)</td><td>($20M)</td><td>($19M)</td><td class="neg">($1M)</td><td class="neg">-5.3%</td><td>($18M)</td><td class="neg">-11.1%</td><td></td></tr>
+          <tr class="ind"><td>IT &amp; systems</td><td>($3M)</td><td>($3M)</td><td>($2M)</td><td>($8M)</td><td>($8M)</td><td>—</td><td>—</td><td>($7M)</td><td class="neg">-14.3%</td><td></td></tr>
+          <tr class="ind"><td>Professional fees</td><td>($3M)</td><td>($2M)</td><td>($2M)</td><td>($7M)</td><td>($6M)</td><td class="neg">($1M)</td><td class="neg">-16.7%</td><td>($6M)</td><td class="neg">-16.7%</td><td></td></tr>
+          <tr class="ind"><td>Other admin</td><td>($2M)</td><td>($2M)</td><td>($1M)</td><td>($5M)</td><td>($5M)</td><td>—</td><td>—</td><td>($5M)</td><td>—</td><td></td></tr>
+          <tr class="sep"><td>Other OpEx</td><td>($5M)</td><td>($5M)</td><td>($5M)</td><td>($15M)</td><td>($12M)</td><td class="neg">($3M)</td><td class="neg">-25.0%</td><td>($11M)</td><td class="neg">-36.4%</td><td></td></tr>
+          <tr class="tot"><td>Total OpEx</td><td>($59M)</td><td>($53M)</td><td>($46M)</td><td>($158M)</td><td>($147M)</td><td style="color:#FFB3B3;">($11M)</td><td style="color:#FFB3B3;">-7.5%</td><td>($142M)</td><td style="color:#FFB3B3;">-11.3%</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
-function sel(el, id) {
-  document.getElementById(id).querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  el.classList.add('on');
-}
-new Chart(document.getElementById('opexChart'), {
-  type: 'bar',
-  data: {
-    labels: ['CRG A', 'CRG B', 'CRG C'],
-    datasets: [
-      { label: 'Actual', data: [59, 53, 46], backgroundColor: '#1F3864', borderRadius: 2, barPercentage: 0.55 },
-      { label: 'Budget', data: [50, 52, 45], backgroundColor: '#85B7EB', borderRadius: 2, barPercentage: 0.55 }
+function sel(el,id){document.getElementById(id).querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));el.classList.add('on');}
+
+const months=['Jan','Feb','Mar','Apr','May','Jun'];
+
+new Chart(document.getElementById('donut'),{
+  type:'doughnut',
+  data:{labels:['CRG A','CRG B','CRG C'],datasets:[{data:[59,53,46],backgroundColor:['#1F3864','#378ADD','#85B7EB'],borderWidth:0}]},
+  options:{responsive:false,animation:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.label+': $'+c.raw+'M'}}}}
+});
+
+new Chart(document.getElementById('trendCRG'),{
+  type:'bar',
+  data:{
+    labels:months,
+    datasets:[
+      {label:'CRG A',data:[8.5,9.2,10.1,9.8,10.5,10.9],backgroundColor:'#1F3864',borderRadius:2,barPercentage:0.7,categoryPercentage:0.75},
+      {label:'CRG B',data:[8.1,8.4,8.9,9.0,8.8,9.8], backgroundColor:'#378ADD',borderRadius:2,barPercentage:0.7,categoryPercentage:0.75},
+      {label:'CRG C',data:[7.2,7.5,7.8,7.6,7.9,8.0], backgroundColor:'#85B7EB',borderRadius:2,barPercentage:0.7,categoryPercentage:0.75},
+      {label:'Budget',type:'line',data:[7.7,7.8,8.0,8.0,8.2,8.2],borderColor:'#C00000',borderWidth:1.5,borderDash:[5,3],pointRadius:0,fill:false}
     ]
   },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ' $' + c.raw + 'M' } } },
-    scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 9 } } },
-      y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 9 }, callback: v => '$' + v + 'M' }, beginAtZero: true }
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>' '+c.dataset.label+': $'+c.raw+'M'}}},
+    scales:{
+      x:{grid:{display:false},ticks:{font:{size:9},color:'#555'}},
+      y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:9},color:'#555',callback:v=>'$'+v+'M'},beginAtZero:true}
+    }
+  }
+});
+
+new Chart(document.getElementById('trendCat'),{
+  type:'bar',
+  data:{
+    labels:months,
+    datasets:[
+      {label:'Headcount',data:[14.2,15.0,16.1,15.8,16.3,16.6],backgroundColor:'#1F3864',stack:'s',borderRadius:0,barPercentage:0.7},
+      {label:'Selling',  data:[4.1, 4.3, 4.6, 4.5, 4.7, 4.8], backgroundColor:'#378ADD',stack:'s',borderRadius:0,barPercentage:0.7},
+      {label:'Admin',    data:[3.1, 3.3, 3.5, 3.4, 3.5, 3.7], backgroundColor:'#85B7EB',stack:'s',borderRadius:0,barPercentage:0.7},
+      {label:'Other',    data:[2.4, 2.5, 2.6, 2.7, 2.7, 3.6], backgroundColor:'#B5D4F4',stack:'s',borderRadius:2,barPercentage:0.7}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false,callbacks:{label:c=>' '+c.dataset.label+': $'+c.raw+'M'}}},
+    scales:{
+      x:{stacked:true,grid:{display:false},ticks:{font:{size:9},color:'#555'}},
+      y:{stacked:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:9},color:'#555',callback:v=>'$'+v+'M'},beginAtZero:true}
     }
   }
 });
