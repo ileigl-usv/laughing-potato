@@ -3,282 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFO Executive Overview — Page 1</title>
+<title>Executive Overview — Page 1 | FY2024</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --blue-dark:   #1F4E79;
-    --blue-mid:    #185FA5;
-    --blue-main:   #378ADD;
-    --blue-light:  #B5D4F4;
-    --blue-pale:   #E6F1FB;
-    --teal:        #1D9E75;
-    --teal-light:  #9FE1CB;
-    --red:         #E24B4A;
-    --red-dark:    #A32D2D;
-    --amber:       #BA7517;
-    --purple:      #7F77DD;
-    --gray-border: #D9D9D9;
-    --gray-text:   #5F5E5A;
-    --gray-muted:  #888780;
-    --gray-bg:     #F5F5F3;
-    --white:       #FFFFFF;
-    --text:        #1A1A1A;
-  }
-
   body {
-    font-family: Arial, sans-serif;
-    background: #F0F2F5;
-    color: var(--text);
-    padding: 24px;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #D9DCE3;
+    color: #252423;
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 20px 24px 40px;
     min-height: 100vh;
   }
 
-  /* ── Top bar ── */
-  .page-header {
+  /* ── header ── */
+  .topbar {
+    background: #1F3864;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--blue-dark);
-    color: #fff;
-    padding: 14px 24px;
-    border-radius: 8px;
-    margin-bottom: 18px;
+    padding: 0 12px;
+    height: 36px;
+    border-radius: 2px;
+    margin-bottom: 4px;
   }
-  .page-header h1 { font-size: 15px; font-weight: 700; letter-spacing: .02em; }
-  .page-header .meta { font-size: 11px; opacity: .75; margin-top: 2px; }
-  .version-pills { display: flex; gap: 6px; }
-  .vp {
-    font-size: 10px; padding: 3px 9px; border-radius: 4px;
-    background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3);
+  .topbar-title { color: #fff; font-size: 13px; font-weight: 700; }
+  .topbar-meta  { color: #B5C4E0; font-size: 9px; display: flex; gap: 14px; align-items: center; }
+  .badge { background: #2E5FA3; color: #C5D7F4; padding: 1px 8px; border-radius: 2px; font-size: 9px; }
+
+  /* ── slicer row ── */
+  .slicer-row {
+    background: #fff;
+    border: 1px solid #CDD2DF;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    height: 34px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .sb { display: flex; align-items: center; gap: 6px; padding: 0 12px; height: 100%; border-right: 1px solid #E4E7EF; }
+  .sl { font-size: 8.5px; text-transform: uppercase; letter-spacing: .05em; color: #999; font-weight: 700; white-space: nowrap; }
+  .pills { display: flex; gap: 3px; }
+  .pill { font-size: 9.5px; padding: 1px 9px; border-radius: 2px; border: 1px solid #CDD2DF; background: #F4F6FA; color: #555; }
+  .pill.on { background: #1F3864; color: #fff; border-color: #1F3864; }
+  .spacer { flex: 1; }
+  .rn { font-size: 8.5px; color: #BBB; padding-right: 12px; }
+
+  /* ── section label ── */
+  .section-label {
+    font-size: 9px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: #8A92A6;
+    margin: 10px 0 5px;
   }
 
-  /* ── Layout grid ── */
-  .kpi-row  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
-  .mid-row  { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 14px; }
-  .bot-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-
-  /* ── Cards ── */
-  .card {
-    background: var(--white);
-    border-radius: 8px;
-    border: 1px solid var(--gray-border);
-    padding: 16px 18px;
+  /* ── panels ── */
+  .panel {
+    background: #fff;
+    border: 1px solid #CDD2DF;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
-  .card-title {
-    font-size: 10px; font-weight: 700; color: var(--gray-text);
-    text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px;
+  .ph {
+    background: #EDF0F7;
+    border-bottom: 1px solid #D4DAE8;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
   }
+  .pt { font-size: 10px; font-weight: 700; color: #1F3864; }
+  .ps { font-size: 8px; color: #AAA; }
 
   /* ── KPI cards ── */
-  .kpi-label { font-size: 10px; font-weight: 700; color: var(--gray-muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-  .kpi-value { font-size: 30px; font-weight: 700; color: var(--text); line-height: 1; }
-  .kpi-delta { font-size: 11px; margin-top: 5px; }
-  .up  { color: var(--teal); }
-  .dn  { color: var(--red-dark); }
-  .neu { color: var(--gray-muted); }
-
-  .kpi-table { width: 100%; font-size: 11px; border-collapse: collapse; margin-top: 10px; border-top: 1px solid var(--gray-border); padding-top: 8px; }
-  .kpi-table td { padding: 3px 0; color: var(--gray-text); }
-  .kpi-table td:last-child { text-align: right; font-weight: 700; color: var(--text); }
-  .kpi-table .neg { color: var(--red-dark) !important; }
-  .kpi-table .pos { color: var(--teal) !important; }
-
-  .sparkline-wrap { position: relative; height: 36px; margin-top: 10px; }
-
-  /* ── Chart wrappers ── */
-  .chart-wrap { position: relative; }
-
-  /* ── Legend ── */
-  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
-  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--gray-text); }
-  .legend-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-  .legend-dash { width: 18px; height: 0; border-top: 2px dashed var(--red); flex-shrink: 0; }
-
-  /* ── Footer ── */
-  .footer {
-    margin-top: 14px; padding-top: 10px;
-    border-top: 1px solid var(--gray-border);
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: var(--gray-muted);
+  .kpi-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 6px; }
+  .kpi-card {
+    background: #fff;
+    border: 1px solid #CDD2DF;
+    border-radius: 2px;
+    padding: 10px 12px;
   }
+  .kpi-label { font-size: 8.5px; color: #777; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; font-weight: 700; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: #1F3864; line-height: 1.1; }
+  .kpi-delta { font-size: 10px; margin-top: 3px; }
+  .up  { color: #217346; }
+  .dn  { color: #C00000; }
 
-  /* ── Accent bar on KPI cards ── */
-  .kpi-accent { height: 3px; border-radius: 2px; margin-bottom: 12px; }
+  .kpi-table { width: 100%; border-collapse: collapse; margin-top: 8px; border-top: 1px solid #E4E7EF; padding-top: 6px; font-size: 10px; }
+  .kpi-table td { padding: 2.5px 0; color: #555; }
+  .kpi-table td:last-child { text-align: right; font-weight: 700; color: #252423; }
+  .kpi-table .neg { color: #C00000 !important; }
+  .kpi-table .pos { color: #217346 !important; }
+  .spk-wrap { position: relative; height: 34px; margin-top: 10px; }
+
+  /* ── chart grids ── */
+  .chart-grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 6px; margin-bottom: 6px; }
+  .chart-grid-2   { display: grid; grid-template-columns: 1fr 1fr;  gap: 6px; margin-bottom: 6px; }
+  .chart-card { background: #fff; border: 1px solid #CDD2DF; border-radius: 2px; padding: 0; display: flex; flex-direction: column; }
+  .chart-body { padding: 10px 12px 8px; flex: 1; display: flex; flex-direction: column; }
+  .ch-wrap { position: relative; }
+
+  /* ── legend ── */
+  .leg { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .li  { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #555; }
+  .ld  { width: 9px; height: 9px; border-radius: 1px; flex-shrink: 0; }
+  .dash-seg { width: 18px; height: 0; border-top: 2px dashed #C00000; flex-shrink: 0; }
+
+
+  /* ── footer ── */
+  .footer {
+    margin-top: 24px; padding-top: 10px;
+    border-top: 1px solid #CDD2DF;
+    font-size: 9.5px; color: #B5C4E0;
+    display: flex; justify-content: space-between;
+    background: #1F3864;
+    padding: 8px 12px;
+    border-radius: 2px;
+    margin-top: 16px;
+  }
 </style>
 </head>
 <body>
 
-<div class="page-header">
-  <div>
-    <h1>Executive Overview — Page 1</h1>
-    <div class="meta">FY2024 CYTD (Dec) &nbsp;·&nbsp; Audience: CFO · CEO · Board &nbsp;·&nbsp; Source: Anaplan / ERP / Treasury</div>
-  </div>
-  <div class="version-pills">
-    <span class="vp">PY</span>
-    <span class="vp">CYTD</span>
-    <span class="vp">FCST</span>
-    <span class="vp">Budget</span>
-    <span class="vp">NY2–3</span>
+<!-- ══ HEADER ══ -->
+<div class="topbar">
+  <span class="topbar-title">Executive Overview — Page 1</span>
+  <div class="topbar-meta">
+    <span>Page 1 of 8</span>
+    <span>Source: Anaplan / ERP / Treasury</span>
+    <span>Audience: CFO · CEO · Board</span>
+    <span class="badge">Sample</span>
   </div>
 </div>
 
-<!-- ── KPI Row ─────────────────────────────────────────────── -->
+<!-- ══ SLICERS ══ -->
+<div class="slicer-row">
+  <div class="sb"><span class="sl">Version</span><div class="pills"><span class="pill on">Actuals</span><span class="pill">Forecast</span><span class="pill">Budget</span></div></div>
+  <div class="sb"><span class="sl">Period</span><div class="pills"><span class="pill on">CYTD</span><span class="pill">MTD</span><span class="pill">Full Year</span></div></div>
+  <div class="sb"><span class="sl">View</span><div class="pills"><span class="pill on">PY</span><span class="pill">Budget</span><span class="pill">NY2–3</span></div></div>
+  <div class="spacer"></div>
+  <span class="rn">Last refresh: today, 06:00 AM</span>
+</div>
+
+<!-- ══ KPI CARDS ══ -->
+<div class="section-label">Key performance indicators</div>
 <div class="kpi-row">
 
-  <div class="card">
-    <div class="kpi-accent" style="background: var(--blue-main);"></div>
+  <div class="kpi-card">
     <div class="kpi-label">ENI</div>
     <div class="kpi-value">$214.0M</div>
-    <div class="kpi-delta up">&#9650; $8.6M vs PY &nbsp;·&nbsp; +4.2%</div>
+    <div class="kpi-delta up">▲ $8.6M vs PY &nbsp;·&nbsp; +4.2%</div>
     <table class="kpi-table">
       <tr><td>Prior year (PY)</td><td>$205.4M</td></tr>
       <tr><td>Budget</td><td>$218.2M</td></tr>
       <tr><td>vs Budget</td><td class="neg">($4.2M) &nbsp;−1.9%</td></tr>
       <tr><td>FY forecast</td><td>$228.1M</td></tr>
     </table>
-    <div class="sparkline-wrap">
-      <canvas id="spkENI" role="img" aria-label="ENI cumulative YTD sparkline Jan–Dec">ENI CYTD rising from $17.2M in Jan to $214.0M in Dec.</canvas>
-    </div>
+    <div class="spk-wrap"><canvas id="spkENI" role="img" aria-label="ENI CYTD cumulative sparkline Jan to Dec">ENI CYTD rises from $17.2M in Jan to $214.0M in Dec.</canvas></div>
   </div>
 
-  <div class="card">
-    <div class="kpi-accent" style="background: var(--teal);"></div>
+  <div class="kpi-card">
     <div class="kpi-label">EBITDA</div>
     <div class="kpi-value">$381.0M</div>
-    <div class="kpi-delta up">&#9650; $21.9M vs PY &nbsp;·&nbsp; +6.1%</div>
+    <div class="kpi-delta up">▲ $21.9M vs PY &nbsp;·&nbsp; +6.1%</div>
     <table class="kpi-table">
       <tr><td>Prior year (PY)</td><td>$359.1M</td></tr>
       <tr><td>Budget</td><td>$374.0M</td></tr>
       <tr><td>vs Budget</td><td class="pos">+$7.0M &nbsp;+1.9%</td></tr>
       <tr><td>EBITDA margin</td><td>28.4%</td></tr>
     </table>
-    <div class="sparkline-wrap">
-      <canvas id="spkEBITDA" role="img" aria-label="EBITDA cumulative YTD sparkline Jan–Dec">EBITDA CYTD rising from $29.8M in Jan to $381.0M in Dec.</canvas>
-    </div>
+    <div class="spk-wrap"><canvas id="spkEBITDA" role="img" aria-label="EBITDA CYTD cumulative sparkline Jan to Dec">EBITDA CYTD rises from $29.8M in Jan to $374.0M in Dec.</canvas></div>
   </div>
 
-  <div class="card">
-    <div class="kpi-accent" style="background: var(--amber);"></div>
+  <div class="kpi-card">
     <div class="kpi-label">Debt / EBITDA</div>
     <div class="kpi-value">3.08×</div>
-    <div class="kpi-delta up">&#9660; 0.19× vs PY &nbsp;(improving)</div>
+    <div class="kpi-delta up">▼ 0.19× vs PY &nbsp;(improving)</div>
     <table class="kpi-table">
       <tr><td>Total debt</td><td>$1,182.5M</td></tr>
-      <tr><td>PY ratio</td><td>3.27×</td></tr>
+      <tr><td>Prior year ratio</td><td>3.27×</td></tr>
       <tr><td>Covenant max</td><td>4.50×</td></tr>
       <tr><td>Headroom</td><td class="pos">1.42× / $543M</td></tr>
     </table>
-    <div class="sparkline-wrap">
-      <canvas id="spkLev" role="img" aria-label="Leverage ratio trend declining from 3.34x to 3.08x">Leverage declining from 3.34× (Jan) to 3.08× (Dec).</canvas>
+    <div class="spk-wrap"><canvas id="spkLev" role="img" aria-label="Leverage ratio trend declining from 3.34x Jan to 3.08x Dec">Leverage declines from 3.34× in Jan to 3.08× in Dec.</canvas></div>
+  </div>
+
+</div>
+
+<!-- ══ BRIDGE + FCF ══ -->
+<div class="section-label">EBITDA bridge &amp; free cash flow</div>
+<div class="chart-grid-2-1">
+
+  <div class="chart-card">
+    <div class="ph"><span class="pt">EBITDA bridge — prior year to current year ($M)</span><span class="ps">PY → CY drivers</span></div>
+    <div class="chart-body">
+      <div class="ch-wrap" style="height:200px;">
+        <canvas id="bridge" role="img" aria-label="EBITDA waterfall: PY $359.1M + Volume $28.4M + Price $13.7M - Cost $11.8M - SGA $8.4M = CY $381M">Bridge: $359.1M PY + $28.4M volume + $13.7M price − $11.8M cost − $8.4M SG&amp;A = $381.0M.</canvas>
+      </div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:#1F3864;"></div>Base</div>
+        <div class="li"><div class="ld" style="background:#217346;"></div>Positive driver</div>
+        <div class="li"><div class="ld" style="background:#C00000;"></div>Negative driver</div>
+        <div class="li"><div class="ld" style="background:#378ADD;"></div>CY result</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="ph"><span class="pt">FCF summary — CYTD ($M)</span><span class="ps">Ops · Invest · Fin</span></div>
+    <div class="chart-body">
+      <div class="ch-wrap" style="height:200px;">
+        <canvas id="fcf" role="img" aria-label="FCF bar chart: Operating $197.6M, Investing -$86.8M, Financing -$33.5M, Net FCF $77.3M">FCF: Operating $197.6M, Investing −$86.8M, Financing −$33.5M, Net $77.3M.</canvas>
+      </div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:#1F3864;"></div>Inflow</div>
+        <div class="li"><div class="ld" style="background:#C00000;"></div>Outflow</div>
+        <div class="li"><div class="ld" style="background:#378ADD;"></div>Net FCF</div>
+      </div>
     </div>
   </div>
 
 </div>
 
-<!-- ── Mid Row: Bridge + FCF ──────────────────────────────── -->
-<div class="mid-row">
+<!-- ══ LIQUIDITY + CAPEX ══ -->
+<div class="section-label">Liquidity &amp; capital expenditure</div>
+<div class="chart-grid-2">
 
-  <div class="card">
-    <div class="card-title">EBITDA bridge — PY to CY ($M)</div>
-    <div class="chart-wrap" style="height: 200px;">
-      <canvas id="bridge" role="img" aria-label="EBITDA waterfall bridge from $359.1M PY to $381.0M CY">PY EBITDA $359.1M + Volume $28.4M + Price mix $13.7M − Cost inflation $11.8M − SG&A $8.4M = CY EBITDA $381.0M.</canvas>
-    </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-sq" style="background:var(--blue-main);"></div>Base</div>
-      <div class="legend-item"><div class="legend-sq" style="background:var(--teal);"></div>Positive driver</div>
-      <div class="legend-item"><div class="legend-sq" style="background:var(--red);"></div>Negative driver</div>
-      <div class="legend-item"><div class="legend-sq" style="background:var(--purple);"></div>CY result</div>
+  <div class="chart-card">
+    <div class="ph"><span class="pt">Liquidity / availability ($M)</span><span class="ps">BOD style · area/line</span></div>
+    <div class="chart-body">
+      <div class="ch-wrap" style="height:178px;">
+        <canvas id="liq" role="img" aria-label="Liquidity area chart $481M Jan to $608M Dec with $300M minimum threshold">Liquidity rises $481M to $608M. Min threshold $300M. Headroom $308M.</canvas>
+      </div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:#378ADD;"></div>Available liquidity</div>
+        <div class="li"><div class="dash-seg"></div>Min threshold $300M</div>
+        <div class="li" style="margin-left:auto;font-weight:700;color:#217346;font-size:10px;">Headroom: $308M</div>
+      </div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">FCF summary — CYTD ($M)</div>
-    <div class="chart-wrap" style="height: 200px;">
-      <canvas id="fcf" role="img" aria-label="FCF bar: Operating $197.6M, Investing -$86.8M, Financing -$33.5M, Net $77.3M">FCF: Operating $197.6M inflow; Investing −$86.8M; Financing −$33.5M; Net FCF $77.3M.</canvas>
-    </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-sq" style="background:var(--blue-main);"></div>Inflow</div>
-      <div class="legend-item"><div class="legend-sq" style="background:var(--red);"></div>Outflow</div>
-      <div class="legend-item"><div class="legend-sq" style="background:var(--purple);"></div>Net FCF</div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ── Bottom Row: Liquidity + CapEx ─────────────────────── -->
-<div class="bot-row">
-
-  <div class="card">
-    <div class="card-title">Liquidity / availability ($M) — BOD style</div>
-    <div class="chart-wrap" style="height: 180px;">
-      <canvas id="liq" role="img" aria-label="Liquidity area chart Jan–Dec, rising from $481M to $608M with $300M minimum threshold">Liquidity rises from $481M (Jan) to $608M (Dec). Min threshold $300M. Headroom $308M.</canvas>
-    </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-sq" style="background:var(--blue-main);"></div>Available liquidity</div>
-      <div class="legend-item"><div class="legend-dash"></div>Min threshold $300M</div>
-      <div class="legend-item neu">Current headroom: <strong style="color:var(--text); margin-left:3px;">$308M</strong></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">CapEx by division — budget vs actual ($M)</div>
-    <div class="chart-wrap" style="height: 180px;">
-      <canvas id="capex" role="img" aria-label="Grouped bars for AF, USE, USL, BT showing actual vs budget CapEx spend">CapEx: AF $81.7M/$94.5M; USE $53.4M/$61.0M; USL $30.8M/$37.5M; BT $46.3M/$51.0M — all under budget.</canvas>
-    </div>
-    <div class="legend">
-      <div class="legend-item"><div class="legend-sq" style="background:var(--blue-main);"></div>Actual</div>
-      <div class="legend-item"><div class="legend-sq" style="background:var(--blue-light);"></div>Budget</div>
-      <div class="legend-item neu">All divisions under budget</div>
+  <div class="chart-card">
+    <div class="ph"><span class="pt">CapEx by division — budget vs actual ($M)</span><span class="ps">Bar · Budget vs Actual</span></div>
+    <div class="chart-body">
+      <div class="ch-wrap" style="height:178px;">
+        <canvas id="capex" role="img" aria-label="Grouped bar chart: AF $81.7M/$94.5M, USE $53.4M/$61.0M, USL $30.8M/$37.5M, BT $46.3M/$51.0M">CapEx: all divisions under budget.</canvas>
+      </div>
+      <div class="leg">
+        <div class="li"><div class="ld" style="background:#1F3864;"></div>Actual</div>
+        <div class="li"><div class="ld" style="background:#85B7EB;"></div>Budget</div>
+        <div class="li" style="margin-left:auto;font-weight:700;color:#217346;font-size:10px;">All divisions under budget</div>
+      </div>
     </div>
   </div>
 
 </div>
+
 
 <div class="footer">
   <span>Source: Anaplan &nbsp;·&nbsp; ERP / Finance system &nbsp;·&nbsp; Treasury system</span>
-  <span>FY2024 CYTD through December &nbsp;·&nbsp; As of Jan 2025</span>
+  <span>Executive Overview — Page 1 &nbsp;·&nbsp; FY2024 &nbsp;·&nbsp; Confidential</span>
 </div>
 
+<!-- ══ CHARTS ══ -->
 <script>
-/* ─── Dataset ──────────────────────────────────────────── */
-const DS = {
-  months:       ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-  eni_cytd:     [17.2, 35.0, 53.1, 70.6, 89.0,107.0,124.9,143.2,160.8,178.9,196.7,214.0],
-  ebitda_cytd:  [29.8, 60.2, 91.4,121.5,153.5,185.0,215.8,248.2,279.3,312.1,344.0,381.0],
-  leverage:     [3.34, 3.31, 3.28, 3.27, 3.24, 3.22, 3.20, 3.18, 3.15, 3.13, 3.11, 3.08],
-  liq:          [481,  490,  502,  514,  523,  538,  531,  547,  559,  572,  591,  608],
-  bridge: {
-    labels: ['PY EBITDA','Volume\ngrowth','Price\nmix','Cost\ninflation','SG&A /\nother','CY EBITDA'],
-    floats: [0,     359.1, 387.5, 401.2, 389.4, 0],
-    vals:   [359.1,  28.4,  13.7, -11.8,  -8.4, 381.0],
-    colors: ['#378ADD','#1D9E75','#1D9E75','#E24B4A','#E24B4A','#7F77DD']
-  },
-  fcf: {
-    labels: ['Operating','Investing','Financing','Net FCF'],
-    vals:   [197.6, -86.8, -33.5, 77.3],
-    colors: ['#378ADD','#E24B4A','#E24B4A','#7F77DD']
-  },
-  capex: {
-    labels:  ['AF','USE','USL','BT'],
-    actual:  [81.7, 53.4, 30.8, 46.3],
-    budget:  [94.5, 61.0, 37.5, 51.0]
-  }
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const D = {
+  eni_cytd:    [17.2,35.0,53.1,70.6,89.0,107.0,124.9,143.2,160.8,178.9,196.7,214.0],
+  ebitda_cytd: [29.8,60.2,91.4,121.5,153.5,185.0,215.8,248.2,279.3,312.1,344.0,374.0],
+  leverage:    [3.34,3.31,3.28,3.27,3.24,3.22,3.20,3.18,3.15,3.13,3.11,3.08],
+  liq:         [481,490,502,514,523,538,531,547,559,572,591,608]
 };
 
-const GRAY = '#888780';
-const gridColor = 'rgba(136,135,128,0.15)';
+const GRID = 'rgba(0,0,0,0.05)';
+const TICK = { font: { size: 9, family: "'Segoe UI', Arial, sans-serif" }, color: '#555' };
 
-/* ─── Sparklines ─────────────────────────────────────────── */
-function mkSparkline(id, data, color) {
+function sparkline(id, data, color) {
   new Chart(document.getElementById(id), {
     type: 'line',
-    data: {
-      labels: DS.months,
-      datasets: [{ data, borderColor: color, borderWidth: 2, pointRadius: 0, tension: 0.4, fill: false }]
-    },
+    data: { labels: MONTHS, datasets: [{ data, borderColor: color, borderWidth: 1.6, pointRadius: 0, tension: 0.4, fill: false }] },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: { enabled: false } },
@@ -286,170 +294,89 @@ function mkSparkline(id, data, color) {
     }
   });
 }
-mkSparkline('spkENI',    DS.eni_cytd,    '#378ADD');
-mkSparkline('spkEBITDA', DS.ebitda_cytd, '#1D9E75');
-mkSparkline('spkLev',    DS.leverage,    '#BA7517');
 
-/* ─── EBITDA Bridge ──────────────────────────────────────── */
+sparkline('spkENI',    D.eni_cytd,    '#1F3864');
+sparkline('spkEBITDA', D.ebitda_cytd, '#378ADD');
+sparkline('spkLev',    D.leverage,    '#85B7EB');
+
+/* EBITDA bridge */
 new Chart(document.getElementById('bridge'), {
   type: 'bar',
   data: {
-    labels: DS.bridge.labels,
+    labels: ['PY EBITDA','Volume\ngrowth','Price\nmix','Cost\ninflation','SG&A /\nother','CY EBITDA'],
     datasets: [
-      {
-        label: 'Float',
-        data: DS.bridge.floats,
-        backgroundColor: 'rgba(0,0,0,0)',
-        borderWidth: 0,
-        stack: 's'
-      },
-      {
-        label: 'Value',
-        data: DS.bridge.vals,
-        backgroundColor: DS.bridge.colors,
-        borderRadius: 3,
-        stack: 's'
-      }
+      { label:'Float', data:[0,359.1,387.5,401.2,389.4,0], backgroundColor:'rgba(0,0,0,0)', borderWidth:0, stack:'s' },
+      { label:'Value', data:[359.1,28.4,13.7,-11.8,-8.4,381.0],
+        backgroundColor:['#1F3864','#217346','#217346','#C00000','#C00000','#378ADD'],
+        borderRadius:2, stack:'s' }
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
       legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => {
-            if (ctx.datasetIndex === 0) return null;
-            const v = ctx.raw;
-            return (v >= 0 ? '+' : '') + '$' + v.toFixed(1) + 'M';
-          }
-        }
-      }
+      tooltip: { callbacks: { label: ctx => { if(ctx.datasetIndex===0) return null; const v=ctx.raw; return (v>=0?'+':'')+'$'+v.toFixed(1)+'M'; } } }
     },
     scales: {
-      x: {
-        stacked: true, grid: { display: false },
-        ticks: { font: { size: 10 }, color: GRAY, autoSkip: false, maxRotation: 0 }
-      },
-      y: {
-        stacked: true, grid: { color: gridColor },
-        ticks: { font: { size: 10 }, color: GRAY, callback: v => '$' + v + 'M' },
-        min: 0
-      }
+      x: { stacked:true, grid:{display:false}, ticks:{...TICK, autoSkip:false, maxRotation:0} },
+      y: { stacked:true, grid:{color:GRID},    ticks:{...TICK, callback:v=>'$'+v+'M'}, min:0 }
     }
   }
 });
 
-/* ─── FCF ────────────────────────────────────────────────── */
+/* FCF */
 new Chart(document.getElementById('fcf'), {
   type: 'bar',
   data: {
-    labels: DS.fcf.labels,
-    datasets: [{
-      data: DS.fcf.vals,
-      backgroundColor: DS.fcf.colors,
-      borderRadius: 3
-    }]
+    labels: ['Operating','Investing','Financing','Net FCF'],
+    datasets: [{ data:[197.6,-86.8,-33.5,77.3], backgroundColor:['#1F3864','#C00000','#C00000','#378ADD'], borderRadius:3 }]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => {
-            const v = ctx.raw;
-            return (v < 0 ? '−' : '') + '$' + Math.abs(v).toFixed(1) + 'M';
-          }
-        }
-      }
-    },
+    plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>{const v=ctx.raw;return (v<0?'−':'')+'$'+Math.abs(v).toFixed(1)+'M';}}} },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: GRAY } },
-      y: {
-        grid: { color: gridColor },
-        ticks: {
-          font: { size: 10 }, color: GRAY,
-          callback: v => (v < 0 ? '−' : '') + '$' + Math.abs(v) + 'M'
-        }
-      }
+      x: { grid:{display:false}, ticks:TICK },
+      y: { grid:{color:GRID}, ticks:{...TICK, callback:v=>(v<0?'−':'')+'$'+Math.abs(v)+'M'} }
     }
   }
 });
 
-/* ─── Liquidity ──────────────────────────────────────────── */
+/* Liquidity */
 new Chart(document.getElementById('liq'), {
   type: 'line',
   data: {
-    labels: DS.months,
+    labels: MONTHS,
     datasets: [
-      {
-        label: 'Availability',
-        data: DS.liq,
-        borderColor: '#378ADD',
-        borderWidth: 2,
-        backgroundColor: 'rgba(55,138,221,0.10)',
-        fill: true,
-        tension: 0.35,
-        pointRadius: 3,
-        pointBackgroundColor: '#378ADD'
-      },
-      {
-        label: 'Min $300M',
-        data: Array(12).fill(300),
-        borderColor: '#E24B4A',
-        borderWidth: 1.5,
-        borderDash: [5, 3],
-        pointRadius: 0,
-        fill: false
-      }
+      { label:'Availability', data:D.liq, borderColor:'#378ADD', borderWidth:2, backgroundColor:'rgba(55,138,221,0.10)', fill:true, tension:0.35, pointRadius:2.5, pointBackgroundColor:'#378ADD', pointBorderColor:'#fff', pointBorderWidth:1.5 },
+      { label:'Min $300M',    data:Array(12).fill(300), borderColor:'#C00000', borderWidth:1.5, borderDash:[5,3], pointRadius:0, fill:false }
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { mode: 'index', intersect: false }
-    },
+    plugins: { legend:{display:false}, tooltip:{mode:'index',intersect:false,callbacks:{label:ctx=>ctx.dataset.label+': $'+ctx.raw+'M'}} },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 10 }, color: GRAY } },
-      y: {
-        grid: { color: gridColor },
-        ticks: { font: { size: 10 }, color: GRAY, callback: v => '$' + v + 'M' },
-        min: 200, max: 700
-      }
+      x: { grid:{display:false}, ticks:TICK },
+      y: { grid:{color:GRID}, ticks:{...TICK, callback:v=>'$'+v+'M'}, min:200, max:700 }
     }
   }
 });
 
-/* ─── CapEx ──────────────────────────────────────────────── */
+/* CapEx */
 new Chart(document.getElementById('capex'), {
   type: 'bar',
   data: {
-    labels: DS.capex.labels,
+    labels: ['AF','USE','USL','BT'],
     datasets: [
-      { label: 'Actual', data: DS.capex.actual, backgroundColor: '#378ADD', borderRadius: 3 },
-      { label: 'Budget', data: DS.capex.budget, backgroundColor: '#B5D4F4', borderRadius: 3 }
+      { label:'Actual ($M)',  data:[81.7,53.4,30.8,46.3], backgroundColor:'#1F3864', borderRadius:2 },
+      { label:'Budget ($M)', data:[94.5,61.0,37.5,51.0], backgroundColor:'#85B7EB', borderRadius:2 }
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        mode: 'index',
-        callbacks: {
-          label: ctx => ctx.dataset.label + ': $' + ctx.raw.toFixed(1) + 'M'
-        }
-      }
-    },
+    plugins: { legend:{display:false}, tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label+': $'+ctx.raw.toFixed(1)+'M'}} },
     scales: {
-      x: { grid: { display: false }, ticks: { font: { size: 11 }, color: GRAY } },
-      y: {
-        grid: { color: gridColor },
-        ticks: { font: { size: 10 }, color: GRAY, callback: v => '$' + v + 'M' },
-        max: 110
-      }
+      x: { grid:{display:false}, ticks:{...TICK, font:{size:11}} },
+      y: { grid:{color:GRID}, ticks:{...TICK, callback:v=>'$'+v+'M'}, max:110 }
     }
   }
 });
